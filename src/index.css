@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "SMBNES";
+  src: url("/src/assets/fonts/SMBNES.ttf") format("truetype");
+}
+
+@theme inline {
+  --font-sans: "SMBNES", monospace;
+
+  --color-gold: #b7bd53;
+
+  --animate-blink: blink 1.01s infinite steps(1);
+  --animate-blink-fast: blink 0.505s infinite steps(1);
+
+  @keyframes blink {
+    0% {
+      opacity: 100%;
+    }
+    50% {
+      opacity: 0%;
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply m-auto min-h-dvh max-w-7xl bg-olive-900 text-white select-none;
+  }
+
+  img,
+  canvas {
+    image-rendering: pixelated;
+  }
+}
