@@ -92,6 +92,7 @@ export default function Menu() {
           label={
             soundMode === 2 ? "ON" : soundMode === 1 ? "ON (MUTE MENU)" : "OFF"
           }
+          className="min-w-85"
         />
       </div>
       <p className="text-center leading-relaxed">TIP: {tip}</p>
