@@ -378,6 +378,7 @@ export default function Game({
   }, [gameOver]);
 
   useEffect(() => {
+    stopAllTracks();
     reset();
 
     if (isTooSmall) return;
