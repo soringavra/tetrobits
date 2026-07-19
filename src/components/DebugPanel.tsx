@@ -36,7 +36,7 @@ export default function DebugPanel() {
   setDebugValue("cache.sprite.size", spriteCache.size);
 
   return (
-    <div className="pointer-events-none fixed top-4 left-4 max-w-md font-mono text-sm leading-none">
+    <div className="pointer-events-none fixed top-4 left-4 z-50 max-w-md font-mono text-sm leading-none">
       <p className="mb-[1lh]">DEBUG</p>
       <div className="grid grid-cols-[max-content_1fr] gap-x-4 break-all">
         {Object.entries(debugArray).map(([key, value]) => (
