@@ -7,6 +7,7 @@ export type ModalProps = {
   title: string;
   content: React.ReactNode;
   actions: React.ReactNode;
+  actionButtonDirection?: "horizontal" | "vertical";
 } | null;
 
 type GameState = {
