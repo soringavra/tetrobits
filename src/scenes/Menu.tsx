@@ -14,20 +14,24 @@ export const renderFrenzyModePrompt = ({
   inGame,
   level,
   bits,
+  showFrenzyModeDialog,
   gameMode,
   setScene,
   setModal,
   setBits,
+  setShowFrenzyModeDialog,
   setGameMode,
   onConfirm,
 }: {
   inGame: boolean;
   level: number;
   bits: number;
+  showFrenzyModeDialog: boolean;
   gameMode: GameMode;
   setScene: (scene: Scene) => void;
   setModal: (modal: ModalProps) => void;
   setBits: (bits: number) => void;
+  setShowFrenzyModeDialog: (showFrenzyModeDialog: boolean) => void;
   setGameMode: (gameMode: GameMode) => void;
   onConfirm: () => void;
 }) => {
@@ -37,58 +41,85 @@ export const renderFrenzyModePrompt = ({
       content: "YOU MUST REACH LEVEL 5 TO UNLOCK FRENZY MODE.",
       actions: <Button onClick={() => setModal(null)}>OK</Button>,
     });
+  } else if (!inGame && gameMode === "frenzy") {
+    setGameMode("frenzy");
+    setScene("game");
   } else if (bits < 10) {
     setModal({
       title: "NOT ENOUGH BITS!",
       content: "YOU NEED AT LEAST 10 BITS TO PLAY FRENZY MODE.",
       actions: <Button onClick={() => setModal(null)}>OK</Button>,
     });
-  } else if (!inGame && gameMode === "frenzy") {
-    setGameMode("frenzy");
-    setScene("game");
   } else {
-    setModal({
-      title: "PLAY FRENZY MODE?",
-      content: (
-        <>
-          <p className="mb-[1lh]">SPEND 10 BITS TO ACCESS FRENZY MODE?</p>
-          <p>YOU HAVE: {formatBitLabel(bits)}</p>
-        </>
-      ),
-      actions: (
-        <>
-          <Button
-            onClick={() => {
-              setModal(null);
-            }}
-          >
-            NO
-          </Button>
-          <Button
-            onClick={() => {
-              setModal(null);
-              setBits(bits - 10);
-              setGameMode("frenzy");
-              setScene("game");
-              onConfirm();
-            }}
-          >
-            YES
-          </Button>
-        </>
-      ),
-    });
+    if (showFrenzyModeDialog)
+      setModal({
+        title: "PLAY FRENZY MODE?",
+        content: (
+          <>
+            <p className="mb-[1lh]">SPEND 10 BITS TO ACCESS FRENZY MODE?</p>
+            <p>YOU HAVE: {formatBitLabel(bits)}</p>
+          </>
+        ),
+        actions: (
+          <>
+            <Button
+              onClick={() => {
+                setModal(null);
+                setBits(bits - 10);
+                setGameMode("frenzy");
+                setScene("game");
+                onConfirm();
+              }}
+            >
+              YES
+            </Button>
+            <Button
+              onClick={() => {
+                setShowFrenzyModeDialog(false);
+                setModal(null);
+                setBits(bits - 10);
+                setGameMode("frenzy");
+                setScene("game");
+                onConfirm();
+              }}
+            >
+              YES, DON'T ASK AGAIN THIS SESSION
+            </Button>
+            <Button
+              onClick={() => {
+                setModal(null);
+              }}
+            >
+              NO
+            </Button>
+          </>
+        ),
+        actionButtonDirection: "vertical",
+      });
+    else {
+      setModal(null);
+      setBits(bits - 10);
+      setGameMode("frenzy");
+      setScene("game");
+      onConfirm();
+    }
   }
 };
 
 export default function Menu() {
   const level = useProgressStore((state) => state.level);
   const bits = useProgressStore((state) => state.bits);
+  const showFrenzyModeDialog = useSettingsStore(
+    (state) => state.showFrenzyModeDialog,
+  );
   const gameMode = useSettingsStore((state) => state.gameMode);
   const pixelScale = useSettingsStore((state) => state.pixelScale);
   const setScene = useGameStore((state) => state.setScene);
   const setModal = useGameStore((state) => state.setModal);
   const setBits = useProgressStore((state) => state.setBits);
+  const setShowFrenzyModeDialog = useSettingsStore(
+    (state) => state.setShowFrenzyModeDialog,
+  );
   const setGameMode = useSettingsStore((state) => state.setGameMode);
 
   return (
@@ -113,10 +144,12 @@ export default function Menu() {
               inGame: false,
               level,
               bits,
+              showFrenzyModeDialog,
               gameMode,
               setScene,
               setModal,
               setBits,
+              setShowFrenzyModeDialog,
               setGameMode,
               onConfirm: () => {},
             })

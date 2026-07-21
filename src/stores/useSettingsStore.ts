@@ -6,6 +6,7 @@ export type GameMode = "classic" | "frenzy";
 export type SettingsState = {
   music: boolean;
   sfx: boolean;
+  showFrenzyModeDialog: boolean;
   gameMode: GameMode;
   pixelScale: number;
   debugMode: boolean;
@@ -14,6 +15,7 @@ export type SettingsState = {
 type SettingsActions = {
   setMusic: (music: boolean) => void;
   setSfx: (sfx: boolean) => void;
+  setShowFrenzyModeDialog: (showFrenzyModeDialog: boolean) => void;
   setGameMode: (gameMode: GameMode) => void;
   setPixelScale: (pixelScale: number) => void;
   setDebugMode: (debugMode: boolean) => void;
@@ -28,6 +30,7 @@ type SettingsActions = {
 const initialState: SettingsState = {
   music: true,
   sfx: true,
+  showFrenzyModeDialog: true,
   gameMode: "classic",
   pixelScale: 2,
   debugMode: false,
@@ -39,6 +42,8 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
       ...initialState,
       setMusic: (music) => set({ music }),
       setSfx: (sfx) => set({ sfx }),
+      setShowFrenzyModeDialog: (showFrenzyModeDialog) =>
+        set({ showFrenzyModeDialog }),
       setGameMode: (gameMode) => set({ gameMode }),
       setPixelScale: (pixelScale) => set({ pixelScale }),
       setDebugMode: (debugMode) => set({ debugMode }),
@@ -51,7 +56,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
     {
       name: "tetrobits-settings",
       partialize: (state) => {
-        const { gameMode, ...rest } = state;
+        const { showFrenzyModeDialog, gameMode, ...rest } = state;
 
         return rest;
       },

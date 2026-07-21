@@ -80,6 +80,9 @@ export default function Game() {
   const bits = useProgressStore((state) => state.bits);
   const totalLines = useProgressStore((state) => state.totalLines);
   const totalGames = useProgressStore((state) => state.totalGames);
+  const showFrenzyModeDialog = useSettingsStore(
+    (state) => state.showFrenzyModeDialog,
+  );
   const gameMode = useSettingsStore((state) => state.gameMode);
   const setScene = useGameStore((state) => state.setScene);
   const setModal = useGameStore((state) => state.setModal);
@@ -89,6 +92,9 @@ export default function Game() {
   const setBits = useProgressStore((state) => state.setBits);
   const setTotalLines = useProgressStore((state) => state.setTotalLines);
   const setTotalGames = useProgressStore((state) => state.setTotalGames);
+  const setShowFrenzyModeDialog = useSettingsStore(
+    (state) => state.setShowFrenzyModeDialog,
+  );
   const setGameMode = useSettingsStore((state) => state.setGameMode);
 
   const isClearingRows = clearedRows.length > 0;
@@ -288,10 +294,12 @@ export default function Game() {
             inGame: true,
             level,
             bits,
+            showFrenzyModeDialog,
             gameMode,
             setScene,
             setModal,
             setBits,
+            setShowFrenzyModeDialog,
             setGameMode,
             onConfirm: () => {
               resetGame();
@@ -358,6 +366,7 @@ export default function Game() {
     isClearingRows,
     board,
     piece,
+    bits,
     moveDown,
     lockPiece,
     resetGame,
