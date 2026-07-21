@@ -46,7 +46,7 @@ export const calculateXpFromLines = (lines: number, level: number) => {
   const multiplier = LINES_XP_MULTIPLIER[Math.min(lines, 4) - 1];
   const levelBonus = 1 + (level - 1) * 0.1;
   const gameModeMultiplier =
-    useSettingsStore.getState().gameMode === "frenzy" ? 1.1 : 1;
+    useSettingsStore.getState().gameMode === "frenzy" ? 1.2 : 1;
 
   return Math.round(multiplier * levelBonus * gameModeMultiplier);
 };
