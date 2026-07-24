@@ -16,7 +16,8 @@ export default function Stats() {
   const resetSettings = useSettingsStore((state) => state.reset);
 
   const STATS: Record<string, unknown> = {
-    "BEST SCORE": progress.highScore,
+    "BEST SCORE CLASSIC": progress.highScoreClassic,
+    "BEST SCORE FRENZY": progress.highScoreFrenzy,
     "XP": `${progress.xp}${progress.level < 25 ? `/${XP_TABLE[progress.level]}` : ""}`,
     "LEVEL": `${progress.level < 25 ? progress.level : `${progress.level} (MAX)`}`,
     "BITS": progress.bits,

@@ -5,7 +5,8 @@ export type ProgressState = {
   xp: number;
   level: number;
   bits: number;
-  highScore: number;
+  highScoreClassic: number;
+  highScoreFrenzy: number;
   upgradeLevels: Record<string, number>; // { id: level }
   totalGames: number;
   totalLines: number;
@@ -15,7 +16,8 @@ type ProgressActions = {
   setXp: (xp: number) => void;
   setLevel: (level: number) => void;
   setBits: (bits: number) => void;
-  setHighScore: (highScore: number) => void;
+  setHighScoreClassic: (highScoreClassic: number) => void;
+  setHighScoreFrenzy: (highScoreFrenzy: number) => void;
   setUpgradeLevel: (id: string, level: number) => void;
   setTotalGames: (totalGames: number) => void;
   setTotalLines: (totalLines: number) => void;
@@ -31,7 +33,8 @@ const initialState: ProgressState = {
   xp: 0,
   level: 1,
   bits: 0,
-  highScore: 0,
+  highScoreClassic: 0,
+  highScoreFrenzy: 0,
   upgradeLevels: {},
   totalGames: 0,
   totalLines: 0,
@@ -44,7 +47,8 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
       setXp: (xp) => set({ xp }),
       setLevel: (level) => set({ level }),
       setBits: (bits) => set({ bits }),
-      setHighScore: (highScore) => set({ highScore }),
+      setHighScoreClassic: (highScoreClassic) => set({ highScoreClassic }),
+      setHighScoreFrenzy: (highScoreFrenzy) => set({ highScoreFrenzy }),
       setUpgradeLevel: (id, level) =>
         set((state) => ({
           upgradeLevels: { ...state.upgradeLevels, [id]: level },

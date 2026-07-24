@@ -76,7 +76,8 @@ export default function Game() {
 
   const xp = useProgressStore((state) => state.xp);
   const level = useProgressStore((state) => state.level);
-  const highScore = useProgressStore((state) => state.highScore);
+  const highScoreClassic = useProgressStore((state) => state.highScoreClassic);
+  const highScoreFrenzy = useProgressStore((state) => state.highScoreFrenzy);
   const bits = useProgressStore((state) => state.bits);
   const totalLines = useProgressStore((state) => state.totalLines);
   const totalGames = useProgressStore((state) => state.totalGames);
@@ -88,7 +89,12 @@ export default function Game() {
   const setModal = useGameStore((state) => state.setModal);
   const setXp = useProgressStore((state) => state.setXp);
   const setLevel = useProgressStore((state) => state.setLevel);
-  const setHighScore = useProgressStore((state) => state.setHighScore);
+  const setHighScoreClassic = useProgressStore(
+    (state) => state.setHighScoreClassic,
+  );
+  const setHighScoreFrenzy = useProgressStore(
+    (state) => state.setHighScoreFrenzy,
+  );
   const setBits = useProgressStore((state) => state.setBits);
   const setTotalLines = useProgressStore((state) => state.setTotalLines);
   const setTotalGames = useProgressStore((state) => state.setTotalGames);
@@ -244,7 +250,11 @@ export default function Game() {
     setXp(totalXp);
     setLevel(newLevel);
     setBits(bits + bitsEarned);
-    setHighScore(Math.max(score, highScore));
+
+    if (gameMode === "classic")
+      setHighScoreClassic(Math.max(score, highScoreClassic));
+    else setHighScoreFrenzy(Math.max(score, highScoreFrenzy));
+
     setTotalGames(totalGames + 1);
 
     playSfx(SFX.lose);
@@ -437,7 +447,12 @@ export default function Game() {
         </Panel>
         <Panel>
           <p>BEST:</p>
-          <p>{Math.max(score, highScore)}</p>
+          <p>
+            {Math.max(
+              score,
+              gameMode === "classic" ? highScoreClassic : highScoreFrenzy,
+            )}
+          </p>
         </Panel>
       </div>
     </div>
