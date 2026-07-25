@@ -70,8 +70,40 @@ export const createEmptyBoard = () => {
   return rows;
 };
 
+let pieceHistory: number[] = [];
+let isFirstPiece = true;
+
+export const resetPieceHistory = () => {
+  pieceHistory = [4, 4, 4, 4];
+  isFirstPiece = true;
+};
+
 export const getRandomPiece = (bitChance: number = 0.5) => {
-  const type = Math.floor(Math.random() * TETROMINOES.length);
+  let type: number;
+
+  if (isFirstPiece) {
+    const safeFirstPieces = [0, 1, 2, 5];
+
+    type = safeFirstPieces[Math.floor(Math.random() * safeFirstPieces.length)];
+    isFirstPiece = false;
+  } else {
+    type = Math.floor(Math.random() * TETROMINOES.length);
+
+    for (let attempt = 0; attempt < 4; attempt++) {
+      type = Math.floor(Math.random() * TETROMINOES.length);
+
+      if (!pieceHistory.includes(type)) {
+        break;
+      }
+    }
+  }
+
+  pieceHistory.push(type);
+
+  if (pieceHistory.length > 4) {
+    pieceHistory.shift();
+  }
+
   const shape = TETROMINOES[type].map((row) =>
     row.map((cell) => {
       if (!cell) return 0;

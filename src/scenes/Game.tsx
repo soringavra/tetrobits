@@ -23,6 +23,7 @@ import {
   type BoardProps,
   type PieceProps,
   createEmptyBoard,
+  resetPieceHistory,
   getRandomPiece,
   isValidMove,
   rotateWithKick,
@@ -58,13 +59,19 @@ export default function Game() {
   );
 
   const [board, setBoard] = useState<BoardProps>(createEmptyBoard);
-  const [piece, setPiece] = useState<PieceProps>(
-    getRandomPiece(bitChance as number),
-  );
-  const [pieceQueue, setPieceQueue] = useState<PieceProps[]>(() => [
-    getRandomPiece(bitChance as number),
-    getRandomPiece(bitChance as number),
-  ]);
+  const [{ initialPiece, initialQueue }] = useState(() => {
+    resetPieceHistory();
+
+    return {
+      initialPiece: getRandomPiece(bitChance as number),
+      initialQueue: [
+        getRandomPiece(bitChance as number),
+        getRandomPiece(bitChance as number),
+      ],
+    };
+  });
+  const [piece, setPiece] = useState<PieceProps>(initialPiece);
+  const [pieceQueue, setPieceQueue] = useState<PieceProps[]>(initialQueue);
   const [timer, setTimer] = useState(60);
   const [score, setScore] = useState(0);
   const [xpEarned, setXpEarned] = useState(0);
@@ -185,6 +192,7 @@ export default function Game() {
   }, [board, piece, lockPiece]);
 
   const resetGame = useCallback(() => {
+    resetPieceHistory();
     setBoard(createEmptyBoard);
     setPiece(getRandomPiece(bitChance as number));
     setPieceQueue([
