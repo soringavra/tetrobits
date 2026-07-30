@@ -12,12 +12,14 @@
   --color-gold: #b6bd53;
   --color-gold-dim: #1b1c0c;
 
-  --animate-flash-slow: flash 0.3s steps(1) 1 forwards;
-  --animate-flash-fast: flash 0.2s steps(1) 1 forwards;
+  --animate-line-flash-slow: line-flash 0.3s steps(1) 1 forwards;
+  --animate-line-flash-fast: line-flash 0.2s steps(1) 1 forwards;
+  --animate-border-flash-slow: border-flash 0.3s steps(1) 1 forwards;
+  --animate-border-flash-fast: border-flash 0.2s steps(1) 1 forwards;
   --animate-blink-slow: blink 1.001s steps(1) infinite;
   --animate-blink-fast: blink 0.501s steps(1) infinite;
 
-  @keyframes flash {
+  @keyframes line-flash {
     0%,
     24.99% {
       opacity: 1;
@@ -33,6 +35,25 @@
     75%,
     100% {
       opacity: 0;
+    }
+  }
+
+  @keyframes border-flash {
+    0%,
+    24.99% {
+      border-color: white;
+    }
+    25%,
+    49.99% {
+      border-color: var(--color-gold);
+    }
+    50%,
+    74.99% {
+      border-color: white;
+    }
+    75%,
+    100% {
+      border-color: var(--color-gold);
     }
   }
 

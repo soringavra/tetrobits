@@ -10,6 +10,7 @@ import {
   isValidMove,
 } from "../../utils/board";
 import { drawCell } from "../../utils/cell";
+import { cn } from "../../utils/cn";
 
 export default function Board({
   board,
@@ -22,6 +23,7 @@ export default function Board({
   isStarted: boolean;
   isClearingRows: boolean;
 }) {
+  const gameMode = useSettingsStore((state) => state.gameMode);
   const pixelScale = useSettingsStore((state) => state.pixelScale);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -75,7 +77,13 @@ export default function Board({
       ref={canvasRef}
       width={BOARD_WIDTH * pixelScale}
       height={BOARD_HEIGHT * pixelScale}
-      className="border-gold border-2 bg-black p-0.75 outline-3 outline-black"
+      className={cn(
+        "border-gold border-2 bg-black p-0.75 outline-3 outline-black",
+        isClearingRows &&
+          (gameMode === "frenzy"
+            ? "animate-border-flash-fast"
+            : "animate-border-flash-slow"),
+      )}
     />
   );
 }

@@ -21,7 +21,9 @@ export default function BoardEffectsOverlay({
           key={row}
           className={cn(
             "absolute w-full bg-white",
-            gameMode === "frenzy" ? "animate-flash-fast" : "animate-flash-slow",
+            gameMode === "frenzy"
+              ? "animate-line-flash-fast"
+              : "animate-line-flash-slow",
           )}
           style={{
             height: `${CELL_SIZE * pixelScale}px`,
