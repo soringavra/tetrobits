@@ -6,6 +6,7 @@ export type GameMode = "classic" | "frenzy";
 export type SettingsState = {
   music: boolean;
   sfx: boolean;
+  mouseInput: boolean;
   showFrenzyModeDialog: boolean;
   gameMode: GameMode;
   pixelScale: number;
@@ -15,6 +16,7 @@ export type SettingsState = {
 type SettingsActions = {
   setMusic: (music: boolean) => void;
   setSfx: (sfx: boolean) => void;
+  setMouseInput: (mouseInput: boolean) => void;
   setShowFrenzyModeDialog: (showFrenzyModeDialog: boolean) => void;
   setGameMode: (gameMode: GameMode) => void;
   setPixelScale: (pixelScale: number) => void;
@@ -30,6 +32,7 @@ type SettingsActions = {
 const initialState: SettingsState = {
   music: true,
   sfx: true,
+  mouseInput: true,
   showFrenzyModeDialog: true,
   gameMode: "classic",
   pixelScale: 2,
@@ -42,6 +45,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
       ...initialState,
       setMusic: (music) => set({ music }),
       setSfx: (sfx) => set({ sfx }),
+      setMouseInput: (mouseInput) => set({ mouseInput }),
       setShowFrenzyModeDialog: (showFrenzyModeDialog) =>
         set({ showFrenzyModeDialog }),
       setGameMode: (gameMode) => set({ gameMode }),

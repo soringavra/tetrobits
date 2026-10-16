@@ -17,15 +17,46 @@ export default function Board({
   piece,
   isStarted,
   isClearingRows,
+  onMoveCol,
+  onClick,
+  onRightClick,
+  onWheel,
 }: {
   board: BoardProps;
   piece: PieceProps;
   isStarted: boolean;
   isClearingRows: boolean;
+  onMoveCol?: (col: number) => void;
+  onClick?: () => void;
+  onRightClick?: () => void;
+  onWheel?: (deltaY: number) => void;
 }) {
   const gameMode = useSettingsStore((state) => state.gameMode);
   const pixelScale = useSettingsStore((state) => state.pixelScale);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+
+    if (!canvas || !onMoveCol) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const relativeX = event.clientX - rect.left;
+
+    const rawCol = Math.floor((relativeX / rect.width) * BOARD_COLS);
+    const col = Math.max(0, Math.min(BOARD_COLS - 1, rawCol));
+
+    onMoveCol(col);
+  };
+
+  const handleContextMenu = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    event.preventDefault();
+    onRightClick?.();
+  };
+
+  const handleWheel = (event: React.WheelEvent<HTMLCanvasElement>) => {
+    onWheel?.(event.deltaY);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -77,6 +108,10 @@ export default function Board({
       ref={canvasRef}
       width={BOARD_WIDTH * pixelScale}
       height={BOARD_HEIGHT * pixelScale}
+      onMouseMove={handleMouseMove}
+      onClick={onClick}
+      onContextMenu={handleContextMenu}
+      onWheel={handleWheel}
       className={cn(
         "border-gold border-2 bg-black p-0.75 outline-3 outline-black",
         isClearingRows &&

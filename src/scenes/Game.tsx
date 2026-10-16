@@ -88,6 +88,7 @@ export default function Game() {
   const bits = useProgressStore((state) => state.bits);
   const totalLines = useProgressStore((state) => state.totalLines);
   const totalGames = useProgressStore((state) => state.totalGames);
+  const mouseInput = useSettingsStore((state) => state.mouseInput);
   const showFrenzyModeDialog = useSettingsStore(
     (state) => state.showFrenzyModeDialog,
   );
@@ -111,6 +112,10 @@ export default function Game() {
   const setGameMode = useSettingsStore((state) => state.setGameMode);
 
   const isClearingRows = clearedRows.length > 0;
+
+  const mouseColRef = useRef<number | null>(null);
+  const canUseMouse =
+    mouseInput && isStarted && !isPaused && !gameOver && !isClearingRows;
 
   const hasNextTwoPreviewUpgrade = useProgressStore(
     (state) => state.upgradeLevels["nextTwoPreview"] ?? 0,
@@ -150,6 +155,8 @@ export default function Game() {
         setGameOver(true);
       } else {
         setPiece(consumeNextPiece());
+
+        if (mouseInput) handleMouseMoveCol(mouseColRef.current, newBoard, true);
       }
 
       setBoard(newBoard);
@@ -190,6 +197,81 @@ export default function Game() {
       lockPiece(piece);
     }
   }, [board, piece, lockPiece]);
+
+  const handleMouseMoveCol = useCallback(
+    (
+      targetCol = mouseColRef.current,
+      currentBoard = board,
+      isSpawning = false,
+    ) => {
+      if (targetCol === null) return;
+
+      mouseColRef.current = targetCol;
+
+      if (!isSpawning && !canUseMouse) return;
+
+      setPiece((prev) => {
+        const pieceWidth = prev.shape[0]?.length ?? 0;
+        const targetX = targetCol - Math.floor(pieceWidth / 2);
+
+        if (targetX === prev.x) return prev;
+
+        const step = targetX > prev.x ? 1 : -1;
+        let nextX = prev.x;
+
+        while (
+          nextX !== targetX &&
+          isValidMove(currentBoard, prev.shape, nextX + step, prev.y)
+        ) {
+          nextX += step;
+        }
+
+        return nextX !== prev.x ? { ...prev, x: nextX } : prev;
+      });
+    },
+    [canUseMouse, board],
+  );
+  const handleMouseClick = useCallback(() => {
+    if (!isStarted) {
+      setIsStarted(true);
+      playTrack(gameMode === "frenzy" ? TRACKS.frenzy : TRACKS.classic);
+
+      return;
+    }
+
+    if (!canUseMouse) return;
+
+    let dropY = piece.y;
+
+    while (isValidMove(board, piece.shape, piece.x, dropY + 1)) dropY++;
+
+    setScore((prev) => prev + dropY - piece.y);
+    lockPiece({ ...piece, y: dropY });
+    playSfx(SFX.drop);
+  }, [isStarted, gameMode, canUseMouse, board, piece, lockPiece]);
+
+  const handleMouseRightClick = useCallback(() => {
+    if (!canUseMouse) return;
+
+    const rotated = rotateWithKick(board, piece);
+
+    if (rotated) setPiece(rotated);
+  }, [canUseMouse, board, piece]);
+
+  const handleMouseWheel = useCallback(
+    (deltaY: number) => {
+      if (!canUseMouse) return;
+
+      if (deltaY > 0) {
+        moveDown();
+      } else if (deltaY < 0) {
+        const rotated = rotateWithKick(board, piece);
+
+        if (rotated) setPiece(rotated);
+      }
+    },
+    [canUseMouse, moveDown, board, piece],
+  );
 
   const resetGame = useCallback(() => {
     resetPieceHistory();
@@ -411,6 +493,10 @@ export default function Game() {
           piece={piece}
           isStarted={isStarted}
           isClearingRows={isClearingRows}
+          onMoveCol={handleMouseMoveCol}
+          onClick={handleMouseClick}
+          onRightClick={handleMouseRightClick}
+          onWheel={handleMouseWheel}
         />
         <BoardEffectsOverlay
           rows={clearedRows}
